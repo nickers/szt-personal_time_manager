@@ -1,0 +1,5 @@
+tms/*.pyc
+tms/**/*.pyc
+tms/**/**/*.pyc
+tms/database.sqlite3
+
