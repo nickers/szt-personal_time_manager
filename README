@@ -1,0 +1,25 @@
+
+########################################################################
+### Praca
+########################################################################
+Serwer uruchamiamy tylko z konsoli w której aktuwowaliśmy nasze 
+wirtualne środowisko pythona. Inaczej nie będziemy mieli ustawionych
+ścieżek do plików.
+
+########################################################################
+### Utworzenie środowiska 
+########################################################################
+Wykonaj polecenia:
+
+virtualenv --no-site-packages tms.env
+source ./tms.env/bin/activate
+pip install -r packages.txt
+
+########################################################################
+### Uaktualnienie listy pakietów
+########################################################################
+Po każdej zmianie listy wymaganych pakietów zaktualizuj packages.txt
+
+pip freeze > packages.txt
+
+Po tym możesz ręcznie edytować plik, by usunąć niepotrzebne zależności.
