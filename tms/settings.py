@@ -95,6 +95,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     
     'draft',
+    'resources',
+    'piston'
 )
 
 

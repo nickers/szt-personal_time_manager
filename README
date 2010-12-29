@@ -2,7 +2,7 @@
 ########################################################################
 ### Praca
 ########################################################################
-Serwer uruchamiamy tylko z konsoli w której aktuwowaliśmy nasze 
+Serwer uruchamiamy tylko z konsoli w której aktualizowaliśmy nasze 
 wirtualne środowisko pythona. Inaczej nie będziemy mieli ustawionych
 ścieżek do plików.
 
