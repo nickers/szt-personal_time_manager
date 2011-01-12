@@ -44,12 +44,12 @@ class AuthProjectHandler(BaseHandler):
                 return rc.NOT_FOUND
         else:
             return base.all()
-        
+
     def delete(self, request, id):
         base = self.model_filter(request.user).get()
         base.filter(pk=id).delete()
         return rc.DELETED
-    
+
     def update(self, request, id):
         base = self.model_filter(request.user).get()
         data = request.POST

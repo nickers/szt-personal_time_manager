@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 #
 # project = {id:int, parent_project:int, name:string, slug:slug, desc:text, budget:int, start_date:timestamp, planned:work_time}
+# viewers = {project_id:int, user:string, pass:string}
 # note = {id:int, name:string, desc:text, files:[], project_id:int, add_date:timestamp}
 # work_time = {id:int, project_id:int, start_time:timestamp, end_time:timestamp, comment:text}
 # event:work_time = {}
@@ -21,6 +22,11 @@ class Project(models.Model):
     
     def __unicode__(self):
         return "#%d \"%s\"[%s]"%(self.id,self.name,self.slug)
+
+class Viewers(models.Model):
+    project = models.ForeignKey(Project, db_index=True)
+    user = models.CharField(max_length=250)
+    password = models.CharField(max_length=100) # format "<algo>$<salt>$<pass>
 
 class UploadedFile(models.Model):
     file = models.FileField(upload_to=settings.DRAFT_UPLOADED_FILES_DIR)
