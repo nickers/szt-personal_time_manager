@@ -24,8 +24,8 @@ class Project(models.Model):
         return "#%d \"%s\"[%s]"%(self.id,self.name,self.slug)
 
 class Viewers(models.Model):
-    project = models.ForeignKey(Project, db_index=True)
-    user = models.CharField(max_length=250)
+    project = models.ForeignKey(Project)
+    user = models.CharField(max_length=250, db_index=True)
     password = models.CharField(max_length=100) # format "<algo>$<salt>$<pass>
 
 class UploadedFile(models.Model):
