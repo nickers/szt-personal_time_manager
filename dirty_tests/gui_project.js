@@ -102,6 +102,68 @@ var real_data = [
     }
 ];
 
+/**
+ * 
+ */
+function create_project_tree() {
+  var tree = new qx.ui.treevirtual.TreeVirtual([ "Projekt", "Opis", "Start" ]);
+  
+  tree.set({ height : 60 });
+  tree.setAlwaysShowOpenCloseSymbol(false);
+  var resizeBehavior = tree.getTableColumnModel().getBehavior();
+  resizeBehavior.set(0, { width:"1*", minWidth:100  });
+  
+  return tree;
+}
+
+
+/**
+ * 
+ */
+function fill_tree_with_data(tree, data) {
+
+  var dataModel = tree.getDataModel();
+  var keys = ['name','description','start_date']
+
+  var added = {};
+  var i = 0;
+
+  for (i=0; i<data.length; i++) {
+    var real_data = data[i];
+    var par = null;
+    
+    if (real_data['parent_project'] && real_data['parent_project']['slug'] in added)  { 
+      par = added[real_data['parent_project']['slug']]; 
+    }
+    
+    var nd = dataModel.addBranch(par, real_data['name'], false);
+    
+    var nnn = "-";
+    if (real_data['parent_project']) {
+      nnn = real_data['parent_project']['slug'];
+    }
+    
+    ///var j=0;
+    for (var j=0; j<keys.length; j++) {
+      dataModel.setColumnData(nd, j, real_data[keys[j]]);
+    }
+    
+    added[real_data.name] = nd;
+  }
+
+  dataModel.setData();
+}
+
+function create_main_gui() {
+  var main_pane = new qx.ui.splitpane.Pane("vertical");
+  // We want to use some of the high-level node operation convenience
+  // methods rather than manually digging into the TreeVirtual helper
+  // classes.  Include the mixin that provides them.
+  qx.Class.include(qx.ui.treevirtual.TreeVirtual, qx.ui.treevirtual.MNode);
+  
+  var tree = create_project_tree();
+}
+
 
 var pane = new qx.ui.splitpane.Pane("vertical");
 
@@ -137,7 +199,30 @@ var resizeBehavior = tree.getTableColumnModel().getBehavior();
 // Ensure that the tree column remains sufficiently wide
 resizeBehavior.set(0, { width:"1*", minWidth:100  });
 
-hBox.add(tree);
+
+// top tree + buttons
+
+var topBox = new qx.ui.container.Composite();
+topBox.setLayout(new qx.ui.layout.HBox());
+//win.add(buttonContainer, {flex:6});
+
+//grid.setRowFlex(row, 1);
+//grid.setColumnFlex(column, 1);
+//buttonContainer.add(button, {row: row, column: column});
+
+var treeButtons = new qx.ui.container.Composite();
+treeButtons.setPadding(5);
+treeButtons.setLayout(new qx.ui.layout.VBox(5));
+
+treeButtons.add(new qx.ui.form.Button("Dodaj projekt główny"));
+treeButtons.add(new qx.ui.form.Button("Dodaj zadanie"));
+treeButtons.add(new qx.ui.form.Button("Usuń"));
+treeButtons.add(new qx.ui.form.Button("Odśwież"));
+
+topBox.add(tree, {flex:1});
+topBox.add(treeButtons, {flex:0});
+
+hBox.add(topBox, 0, {flex:0.1});
 
 // tree data model
 var dataModel = tree.getDataModel();
@@ -210,7 +295,7 @@ page1.add(conta);
 tabView.add(page2);
 
 
-hBox.add(tabView);
+hBox.add(tabView, 1, {flex:0.7});
 
 //////hBox.add(commandFrame);
 
