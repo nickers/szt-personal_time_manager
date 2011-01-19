@@ -105,7 +105,7 @@ var real_data = [
 /**
  * 
  */
-function create_project_tree() {
+function create_projects_tree() {
   var tree = new qx.ui.treevirtual.TreeVirtual([ "Projekt", "Opis", "Start" ]);
   
   tree.set({ height : 60 });
