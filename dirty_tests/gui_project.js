@@ -143,7 +143,6 @@ function fill_tree_with_data(tree, data) {
       nnn = real_data['parent_project']['slug'];
     }
     
-    ///var j=0;
     for (var j=0; j<keys.length; j++) {
       dataModel.setColumnData(nd, j, real_data[keys[j]]);
     }
@@ -155,16 +154,52 @@ function fill_tree_with_data(tree, data) {
 }
 
 function create_main_gui() {
+
+  var gui = { pane:null, tree:null, buttons:[] };
+
   var main_pane = new qx.ui.splitpane.Pane("vertical");
+  gui.pane = main_pane;
+  
+  
   // We want to use some of the high-level node operation convenience
   // methods rather than manually digging into the TreeVirtual helper
   // classes.  Include the mixin that provides them.
   qx.Class.include(qx.ui.treevirtual.TreeVirtual, qx.ui.treevirtual.MNode);
   
-  var tree = create_project_tree();
+  //** top part of window **//
+  gui.tree = create_projects_tree();
+  fill_tree_with_data(gui.tree, real_data);
+
+  var treeButtons = new qx.ui.container.Composite();
+  treeButtons.setPadding(5);
+  treeButtons.setLayout(new qx.ui.layout.VBox(5));
+  
+  var buttonsData = [
+    ["add_project","Dodaj projekt główny"], 
+    ["add_task", "Dodaj zadanie"],
+    ["remove", "Usuń"],
+    ["refresh", "Odśwież"]
+  ];
+
+  for (var i in buttonsData) {
+  	var b = buttonsData[i];
+  	gui.buttons[b[0]] = new qx.ui.form.Button(b[1]);
+  	treeButtons.add(gui.buttons[b[0]]);
+  }
+
+  var topBox = new qx.ui.container.Composite();
+  topBox.setLayout(new qx.ui.layout.HBox());
+  topBox.add(gui.tree, {flex:1});
+  topBox.add(treeButtons, {flex:0});
+
+  main_pane.add(topBox, 0, {flex:0.1});
+
+  //** bottom part of window - tabs with data **//
+  
+  return gui;
 }
 
-
+/*
 var pane = new qx.ui.splitpane.Pane("vertical");
 
 
@@ -251,27 +286,33 @@ for (i=0; i<real_data.length; i++) {
   }
   
   added[real_data[i].name] = nd;
-/*{
-    "description": "test", 
-    "budget": 0, 
-    "slug": "test", 
-    "user": {
-        "username": "nickers", 
-        "id": 1
-    }, 
-    "parent_project": null, 
-    "start_date": "2010-12-25 20:00:00", 
-    "planned_work": "00:00:00", 
-    "name": "test"
-}*/
+//{
+//    "description": "test", 
+//    "budget": 0, 
+//    "slug": "test", 
+//    "user": {
+//        "username": "nickers", 
+//        "id": 1
+//    }, 
+//    "parent_project": null, 
+//    "start_date": "2010-12-25 20:00:00", 
+//    "planned_work": "00:00:00", 
+//    "name": "test"
+//}
   
 }
 
 // ---- end of my work ----
 
-
-
 dataModel.setData();
+*/
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+	var gui = create_main_gui();
+	var hBox = gui.pane;
+	this.getRoot().add(hBox, { edge : 10 });
+
+
 
 var commandFrame = new qx.ui.groupbox.GroupBox("Control");
 commandFrame.setLayout(new qx.ui.layout.Canvas());
@@ -309,7 +350,7 @@ o = new qx.ui.form.TextField();
 o.set({ readOnly: true });
 commandFrame.add(o, { left : 4, right : 0, top : 20 });
 
-tree.addListener(
+gui.tree.addListener(
   "changeSelection",
   function(e)
   {
@@ -318,7 +359,7 @@ tree.addListener(
     var nodes = e.getData();
     if (nodes.length)
     {
-      this.setValue(tree.getHierarchy(nodes[0].nodeId).join('/'));
+      this.setValue(gui.tree.getHierarchy(nodes[0].nodeId).join('/'));
       buttonRemove.setEnabled(true);
     }
     else
@@ -336,7 +377,7 @@ buttonRemove.addListener(
   "execute",
   function(e)
   {
-    var selectedNodes = tree.getSelectedNodes();
+    var selectedNodes = gui.tree.getSelectedNodes();
     for (var i = 0; i < selectedNodes.length; i++)
     {
       dataModel.prune(selectedNodes[i].nodeId, true);
@@ -350,7 +391,7 @@ commandFrame.add(o, { top : 100, left : 0 });
 o.addListener("changeValue",
               function(e)
               {
-                tree.setExcludeFirstLevelTreeLines(e.getData());
+                gui.tree.setExcludeFirstLevelTreeLines(e.getData());
               });
 
 o = new qx.ui.form.CheckBox("Always show open/close symbol?");
@@ -359,19 +400,19 @@ commandFrame.add(o, { top : 120, left : 0 });
 o.addListener("changeValue",
               function(e)
               {
-                tree.setAlwaysShowOpenCloseSymbol(e.getData());
+                gui.tree.setAlwaysShowOpenCloseSymbol(e.getData());
               });
 
 o = new qx.ui.form.CheckBox("Remove open/close if found empty?");
 o.set({ value: true });
 commandFrame.add(o, { top : 140, left : 0 });
-tree.addListener("treeOpenWhileEmpty",
+gui.tree.addListener("treeOpenWhileEmpty",
                  function(e)
                  {
                    if (this.getValue())
                    {
                      var node = e.getData();
-                     tree.nodeSetHideOpenClose(node, true);
+                     gui.tree.nodeSetHideOpenClose(node, true);
                    }
                  },
                  o);
@@ -382,7 +423,7 @@ commandFrame.add(o, { top : 160, left : 0 });
 o.addListener("changeValue",
               function(e)
               {
-                tree.setOpenCloseClickSelectsRow(e.getData());
+                gui.tree.setOpenCloseClickSelectsRow(e.getData());
               });
 
 o = new qx.ui.form.CheckBox("Disable the tree?");
@@ -391,5 +432,5 @@ commandFrame.add(o, { top : 180, left : 0 });
 o.addListener("changeValue",
               function(e)
               {
-                tree.setEnabled(! e.getData());
+                gui.tree.setEnabled(! e.getData());
               });
