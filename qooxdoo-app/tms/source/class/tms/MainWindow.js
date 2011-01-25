@@ -1,59 +1,65 @@
 qx.Class.define("tms.MainWindow",
 {
-    extend : qx.ui.window.Window,
+  extend : qx.ui.window.Window,
 //    extend : qx.ui.
 
-    construct : function(root)
-    {
-    	this.do_it(root);
-    },
+  construct : function(root)
+  {
+  	this.do_it(root);
+  },
+//});
 
-    create_projects_tree : function() 
-    {
-        var tree = new qx.ui.treevirtual.TreeVirtual([ "Projekt", "Opis", "Start" ]);
-  
-        tree.set({ height : 60 });
-		tree.setAlwaysShowOpenCloseSymbol(false);
-		var resizeBehavior = tree.getTableColumnModel().getBehavior();
-		resizeBehavior.set(0, { width:"1*", minWidth:100  });
-
-		return tree;
-    },
+//qx.Class.define("tms.WindowFunctions",
+//  extend : qx.core.Object,
+  members: {
+  create_projects_tree : function() 
+  {
+    var tree = new qx.ui.treevirtual.TreeVirtual([ "Projekt", "Opis", "Start" ]);
+    
+    tree.set({ height : 60 });
+    tree.setAlwaysShowOpenCloseSymbol(false);
+    var resizeBehavior = tree.getTableColumnModel().getBehavior();
+    resizeBehavior.set(0, { width:"1*", minWidth:100  });
+    
+    return tree;
+  },
 
 
 	fill_tree_with_data : function(tree, data) 
 	{
+    var dataModel = tree.getDataModel();
+    var keys = ['name','description','start_date']
 
-	  var dataModel = tree.getDataModel();
-	  var keys = ['name','description','start_date']
-
-	  var added = {};
-	  var i = 0;
-
-	  for (i=0; i<data.length; i++) {
-		var real_data = data[i];
-		var par = null;
-		
-		if (real_data['parent_project'] && real_data['parent_project']['slug'] in added)  { 
-		  par = added[real_data['parent_project']['slug']]; 
-		}
-		
-		var nd = dataModel.addBranch(par, real_data['name'], false);
-		
-		var nnn = "-";
-		if (real_data['parent_project']) {
-		  nnn = real_data['parent_project']['slug'];
-		}
-		
-		for (var j=0; j<keys.length; j++) {
-		  dataModel.setColumnData(nd, j, real_data[keys[j]]);
-		}
-		
-		added[real_data.name] = nd;
-	  }
-
-	  dataModel.setData();
-	},
+    var added = {};
+    var i = 0;
+  
+  
+//    data = data.toArray();
+    for (i=0; i<data.length; i++) {
+      var real_data = data[i];     
+      
+      var par = null;
+      
+      if (real_data['parent_project'] && real_data['parent_project']['slug'] in added)  { 
+        par = added[real_data['parent_project']['slug']]; 
+      }
+      
+      var nd = dataModel.addBranch(par, real_data['name'], false);
+      
+      var nnn = "-";
+      if (real_data['parent_project']) {
+        nnn = real_data['parent_project']['slug'];
+      }
+      
+      for (var j=0; j<keys.length; j++) {
+        dataModel.setColumnData(nd, j, real_data[keys[j]]);
+      }
+      
+      added[real_data.name] = nd;
+    }
+    
+    dataModel.setData();
+  },
 
 	create_main_gui : function() {
 
@@ -163,14 +169,30 @@ var real_data = [
 
 
 
+  var data_src = new tms.ProjectsData();
+  
+   // data_src.addListener("changeProjects", 
+   //  function(e) {
+   //    this.debug(qx.dev.Debug.debugProperties(e.getData()));
+   //  }, 
+   //  this);
 
-
+   //data_src.fetchProjects();
 
 	  var gui = { pane:null, tree:null, buttons:[] };
+	  
+	  data_src.addListener("changeProjects", function(e) {
+	    var data = e.getData();
+	    if (data!=null) {
+	      this.fill_tree_with_data(gui.tree, data);
+	    }
+	  },
+	  this);
 
 	  var main_pane = new qx.ui.splitpane.Pane("vertical");
 	  gui.pane = main_pane;
 	  
+	  main_pane.addListener("appear", function () {data_src.fetchProjects();}, this);
 	  
 	  // We want to use some of the high-level node operation convenience
 	  // methods rather than manually digging into the TreeVirtual helper
@@ -179,7 +201,7 @@ var real_data = [
 	  
 	  //** top part of window **//
 	  gui.tree = this.create_projects_tree();
-	  this.fill_tree_with_data(gui.tree, real_data);
+	  //this.fill_tree_with_data(gui.tree, real_data);
 
 	  var treeButtons = new qx.ui.container.Composite();
 	  treeButtons.setPadding(5);
@@ -214,7 +236,7 @@ var real_data = [
 	do_it : function(root)
 	{
 		var gui = this.create_main_gui();
-		return;
+
 		var hBox = gui.pane;
 		root.add(hBox, { edge : 10 });
 
@@ -342,6 +364,6 @@ var real_data = [
 		
 		
 	}	
-		
+  }		
 	
 });

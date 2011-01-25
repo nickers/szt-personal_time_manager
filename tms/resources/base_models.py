@@ -5,8 +5,8 @@ from piston.utils import rc
 # handlers
 class AuthBaseHandler(BaseHandler):
     allowed_methods = ('GET', 'DELETE', 'PUT', 'POST')
-    model = Project
-    model_filter = AuthProject
+    model = None # Model
+    model_filter = None # AuthProject # filter
     fields = ('name', 'slug', 'start_date', 'parent_project', 'planned_work', 'budget', 'description', ('user',('id','username')))
 
     def pre_create(self, request, *args, **kwargs):

@@ -71,8 +71,7 @@ qx.Class.define("tms.Application",
         alert("Hello World!");
       });
 
-      var main = new tms.MainWindow();
-      main.do_it(this.getRoot());
+      var main = new tms.MainWindow(doc);
     }
   }
 });
