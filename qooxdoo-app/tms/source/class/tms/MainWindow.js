@@ -7,13 +7,9 @@ qx.Class.define("tms.MainWindow",
   {
   	this.do_it(root);
   },
-//});
 
-//qx.Class.define("tms.WindowFunctions",
-//  extend : qx.core.Object,
   members: {
-  create_projects_tree : function() 
-  {
+  create_projects_tree : function() {
     var tree = new qx.ui.treevirtual.TreeVirtual([ "Projekt", "Opis", "Start" ]);
     
     tree.set({ height : 60 });
@@ -25,31 +21,22 @@ qx.Class.define("tms.MainWindow",
   },
 
 
-	fill_tree_with_data : function(tree, data) 
-	{
+	fill_tree_with_data : function(tree, data) {
     var dataModel = tree.getDataModel();
     var keys = ['name','description','start_date']
 
     var added = {};
-    var i = 0;
   
-  
-//    data = data.toArray();
-    for (i=0; i<data.length; i++) {
+    for (var i=0; i<data.length; i++) {
       var real_data = data[i];     
       
       var par = null;
       
-      if (real_data['parent_project'] && real_data['parent_project']['slug'] in added)  { 
-        par = added[real_data['parent_project']['slug']]; 
+      if (real_data.parent_project && real_data.parent_project.slug in added)  { 
+        par = added[real_data.parent_project.slug]; 
       }
       
-      var nd = dataModel.addBranch(par, real_data['name'], false);
-      
-      var nnn = "-";
-      if (real_data['parent_project']) {
-        nnn = real_data['parent_project']['slug'];
-      }
+      var nd = dataModel.addBranch(par, real_data.name, false);
       
       for (var j=0; j<keys.length; j++) {
         dataModel.setColumnData(nd, j, real_data[keys[j]]);
@@ -62,138 +49,13 @@ qx.Class.define("tms.MainWindow",
   },
 
 	create_main_gui : function() {
-
-
-var real_data = [
-    {
-        "description": "test", 
-        "budget": 0, 
-        "slug": "test", 
-        "user": {
-            "username": "nickers", 
-            "id": 1
-        }, 
-        "parent_project": null, 
-        "start_date": "2010-12-25 20:00:00", 
-        "planned_work": "00:00:00", 
-        "name": "test"
-    }, 
-    {
-        "description": "", 
-        "budget": 0, 
-        "slug": "sub1", 
-        "user": {
-            "username": "nickers", 
-            "id": 1
-        }, 
-        "parent_project": {
-            "description": "test", 
-            "budget": 0, 
-            "slug": "test", 
-            "user": {
-                "username": "nickers", 
-                "id": 1
-            }, 
-            "parent_project": null, 
-            "start_date": "2010-12-25 20:00:00", 
-            "planned_work": "00:00:00", 
-            "name": "test"
-        }, 
-        "start_date": "2011-01-12 22:20:13", 
-        "planned_work": "00:00:00", 
-        "name": "sub1"
-    }, 
-    {
-        "description": "", 
-        "budget": 0, 
-        "slug": "sub2", 
-        "user": {
-            "username": "nickers", 
-            "id": 1
-        }, 
-        "parent_project": {
-            "description": "test", 
-            "budget": 0, 
-            "slug": "test", 
-            "user": {
-                "username": "nickers", 
-                "id": 1
-            }, 
-            "parent_project": null, 
-            "start_date": "2010-12-25 20:00:00", 
-            "planned_work": "00:00:00", 
-            "name": "test"
-        }, 
-        "start_date": "2011-01-12 22:20:46", 
-        "planned_work": "22:20:46", 
-        "name": "sub2"
-    }, 
-    {
-        "description": "", 
-        "budget": 0, 
-        "slug": "sub11", 
-        "user": {
-            "username": "nickers", 
-            "id": 1
-        }, 
-        "parent_project": {
-            "description": "", 
-            "budget": 0, 
-            "slug": "sub1", 
-            "user": {
-                "username": "nickers", 
-                "id": 1
-            }, 
-            "parent_project": {
-                "description": "test", 
-                "budget": 0, 
-                "slug": "test", 
-                "user": {
-                    "username": "nickers", 
-                    "id": 1
-                }, 
-                "parent_project": null, 
-                "start_date": "2010-12-25 20:00:00", 
-                "planned_work": "00:00:00", 
-                "name": "test"
-            }, 
-            "start_date": "2011-01-12 22:20:13", 
-            "planned_work": "00:00:00", 
-            "name": "sub1"
-        }, 
-        "start_date": "2011-01-12 22:21:02", 
-        "planned_work": "22:21:02", 
-        "name": "sub11"
-    }
-];
-
-
-
-  var data_src = new tms.ProjectsData();
-  
-   // data_src.addListener("changeProjects", 
-   //  function(e) {
-   //    this.debug(qx.dev.Debug.debugProperties(e.getData()));
-   //  }, 
-   //  this);
-
-   //data_src.fetchProjects();
-
 	  var gui = { pane:null, tree:null, buttons:[] };
 	  
-	  data_src.addListener("changeProjects", function(e) {
-	    var data = e.getData();
-	    if (data!=null) {
-	      this.fill_tree_with_data(gui.tree, data);
-	    }
-	  },
-	  this);
+	  
 
 	  var main_pane = new qx.ui.splitpane.Pane("vertical");
 	  gui.pane = main_pane;
-	  
-	  main_pane.addListener("appear", function () {data_src.fetchProjects();}, this);
-	  
+
 	  // We want to use some of the high-level node operation convenience
 	  // methods rather than manually digging into the TreeVirtual helper
 	  // classes.  Include the mixin that provides them.
@@ -208,10 +70,10 @@ var real_data = [
 	  treeButtons.setLayout(new qx.ui.layout.VBox(5));
 	  
 	  var buttonsData = [
-		["add_project","Dodaj projekt główny"], 
-		["add_task", "Dodaj zadanie"],
-		["remove", "Usuń"],
-		["refresh", "Odśwież"]
+  		["add_project","Dodaj projekt główny"], 
+  		["add_task", "Dodaj zadanie"],
+  		["remove", "Usuń"],
+  		["refresh_projects", "Odśwież"]
 	  ];
 
 	  for (var i in buttonsData) {
@@ -229,6 +91,19 @@ var real_data = [
 
 	  //** bottom part of window - tabs with data **//
 	  
+	  
+	  // ## *** data *** ## //
+    var data_src = new tms.ProjectsData();
+    
+    data_src.addListener("changeProjects", function(e) {
+        if (e.getData()!=null) this.fill_tree_with_data(gui.tree, e.getData());
+      },
+      this
+    );
+        
+    main_pane.addListener("appear", function () { data_src.fetchProjects(); }, this);
+    
+    
 	  return gui;
 	},
 
