@@ -24,12 +24,12 @@ class AuthBaseHandler(BaseHandler):
         self.pre_create(request, *args, **kwargs)
         return super(self).create(self, request, *args, **kwargs)
     
-    def read(self, request, id=None):
+    def read(self, request, id=None, *args, **kwargs):
         """
         Returns object with given id ("404 Not found" if no object with given id)
         or list of objects. Both are filtered only for logged user.
         """
-        base = self.model_filter(request.user).get()
+        base = self.model_filter(request.user).get(kwargs)
         
         self.pre_read(request, id)
         
