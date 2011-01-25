@@ -41,6 +41,7 @@ qx.Class.define("tms.MainWindow",
       for (var j=0; j<keys.length; j++) {
         dataModel.setColumnData(nd, j, real_data[keys[j]]);
       }
+      dataModel.setUserData(nd, real_data);
       
       added[real_data.name] = nd;
     }
@@ -138,6 +139,9 @@ qx.Class.define("tms.MainWindow",
 		tabView.add(page2);
 
 
+    var notesTab = new tms.NotesTab();
+    tabView.add(notesTab);
+
 		hBox.add(tabView, 1, {flex:0.7});
 
 		//////hBox.add(commandFrame);
@@ -154,23 +158,35 @@ qx.Class.define("tms.MainWindow",
 
 		gui.tree.addListener(
 		  "changeSelection",
-		  function(e)
-		  {
-			// Get the list of selected nodes.  We're in single-selection mode,
-			// so there will be only one of them.
-			var nodes = e.getData();
-			if (nodes.length)
-			{
-			  this.setValue(gui.tree.getHierarchy(nodes[0].nodeId).join('/'));
-			  buttonRemove.setEnabled(true);
-			}
-			else
-			{
-			  this.setValue("");
-			  buttonRemove.setEnabled(false);
-			}
+		  function(e) {
+  			// Get the list of selected nodes.  We're in single-selection mode,
+  			// so there will be only one of them.
+  			var nodes = e.getData();
+  			if (nodes.length) {
+  			  this.setValue(gui.tree.getHierarchy(nodes[0].nodeId).join('/'));
+  			  buttonRemove.setEnabled(true);
+  			  
+  			  var proj = gui.tree.getDataModel().getUserData(nodes[0].nodeId).slug;
+  			  
+  			  var notesData = new tms.NotesData();
+  			  
+  			  var rc = new tms.RuntimeConfig();
+          var dd = new tms.DataDownloader();
+          var ctx = this;
+          dd.fetchData(rc.getUrl("notes")+proj, function(e) {
+//            var nd = new tms.NotesData();
+//            nd.fetchNotes(gui.tree.getDataModel().getUserData(nodes[0].nodeId).id);
+            notesTab.setData(e);
+          },{});
+  			   
+  			  
+  			} else {
+  			  this.setValue("");
+  			  buttonRemove.setEnabled(false);
+  			  notesTab.setEmpty();
+  			}
 		  },
-		  o);
+		o);
 
 		var buttonRemove = new qx.ui.form.Button("Remove");
 		buttonRemove.set({ enabled: false });
@@ -179,12 +195,12 @@ qx.Class.define("tms.MainWindow",
 		  "execute",
 		  function(e)
 		  {
-			var selectedNodes = gui.tree.getSelectedNodes();
-			for (var i = 0; i < selectedNodes.length; i++)
-			{
-//			  dataModel.prune(selectedNodes[i].nodeId, true);
-//			  dataModel.setData();
-			}
+  			var selectedNodes = gui.tree.getSelectedNodes();
+  			for (var i = 0; i < selectedNodes.length; i++)
+  			{
+  //			  dataModel.prune(selectedNodes[i].nodeId, true);
+  //			  dataModel.setData();
+  			}
 		  });
 
 		o = new qx.ui.form.CheckBox("Exclude first-level tree lines?");

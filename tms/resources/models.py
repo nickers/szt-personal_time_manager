@@ -29,7 +29,7 @@ class AuthNote():
         which = {}
         if filter and "project" in filter:
             res = res.filter(project__slug=filter["project"])
-        return res.order_by("add_time")
+        return res.order_by("-add_time")
 
 class AuthTimeEvent():
     def __init__(self, u):

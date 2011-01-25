@@ -4,7 +4,8 @@ qx.Class.define( "tms.RuntimeConfig", {
     getUrl : function(name) {
       var base_url = "/resources";
       var urls = {
-        "projects" : "/project/"
+        "projects" : "/project/",
+        "notes" : "/note/"
       };
       return base_url + urls[name];
     }
