@@ -37,7 +37,7 @@ class UploadedFile(models.Model):
 class Note(models.Model):
     name = models.CharField(max_length=250)
     description = models.TextField(blank=True)
-    files = models.ManyToManyField(UploadedFile, null=False)
+    files = models.ManyToManyField(UploadedFile, null=True, blank=True)
     project = models.ForeignKey(Project)
     add_time = models.DateTimeField(auto_now_add=True)
 
