@@ -105,9 +105,13 @@ qx.Class.define("tms.MainWindow",
       this
     );
         
-    main_pane.addListener("appear", function () { data_src.fetchProjects(); }, this);
+    main_pane.addListener("appear", function() { data_src.fetchProjects(); }, this);
     
-    gui.buttons["refresh"].addListener("execute", function () { data_src.fetchProjects(); }, this);
+    gui.buttons["refresh"].addListener("execute", function() { data_src.fetchProjects(); }, this);
+    gui.buttons["add_project"].addListener("execute", function() {
+      var addWindow = new tms.AddProjectWindow(gui.project_data, null);
+      addWindow.show();
+    }, this);
     
     
 	  return gui;

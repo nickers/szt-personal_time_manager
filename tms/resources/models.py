@@ -46,8 +46,10 @@ class AuthProjectHandler(AuthBaseHandler):
     fields = ('id', 'name', 'slug', 'start_date', ('parent_project', ('id','name','slug')), 'planned_work', 'budget', 'description', ('user',('id','username')))
     
     def pre_create(self, request, *args, **kwargs):
+        print kwargs
         try:
             request.data['user'] = request.user
+            request.data['slug'] = request.data["name"]
         except Exception as e:
             print e
             
