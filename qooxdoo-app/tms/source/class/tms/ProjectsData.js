@@ -21,6 +21,17 @@ qx.Class.define( "tms.ProjectsData", {
         function(e) { if(func)func(e); ctx.fetchProjects(); },
         data,
         {});
+    },
+    
+    deleteProject : function(slug,func) {
+      var rc = new tms.RuntimeConfig();
+      var dd = new tms.DataDownloader();
+      var ctx = this;
+      console.log("deleting project for: " + rc.getUrl("projects") + slug.toString());
+      
+      dd.deleteData(rc.getUrl("projects") + slug.toString(), 
+        function(e) { if(func)func(e); ctx.fetchProjects();}
+      );
     }
   },
   properties : {

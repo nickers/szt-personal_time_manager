@@ -29,8 +29,19 @@ qx.Class.define( "tms.DataDownloader", {
           onSuccess: function(r) { if (callback) callback(r.reponseText); }
         });
       }
-    }
-    ,
+    },
+    
+    deleteData : function(url, callback) {
+      if (typeof(advAJAX)=="undefined") {
+        this.ensureLoaded(function() {this.deleteData(url,callback);} );
+      } else {
+        advAJAX.dodelete({
+          url: url,
+          onSuccess: function(r) { if (callback) callback(r.reponseText); }
+        });
+      }
+    },
+    
     ensureLoaded : function(f) {
       var l = new qx.io.ScriptLoader();
       l.load("/static/advajax.js?pseduo="+(new Date().getTime()), f, this);

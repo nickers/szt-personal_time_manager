@@ -8,7 +8,7 @@ qx.Class.define("tms.AddProjectWindow",
     this.setShowMaximize(false);
     this.setShowMinimize(false);
     this.setWidth(250);
-    this.setHeight(300);
+    this.setHeight(250);
     this.moveTo(300,20);
     this.setLayout(new qx.ui.layout.VBox());
     

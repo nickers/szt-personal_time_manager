@@ -4,6 +4,7 @@ from piston.handler import BaseHandler
 from piston.utils import rc
 from draft.models import *
 from base_models import AuthBaseHandler
+from django.template.defaultfilters import slugify
 
 # filters
 class AuthProject():
@@ -49,7 +50,7 @@ class AuthProjectHandler(AuthBaseHandler):
         print kwargs
         try:
             request.data['user'] = request.user
-            request.data['slug'] = request.data["name"]
+            request.data['slug'] = slugify(request.data["name"])
         except Exception as e:
             print e
             

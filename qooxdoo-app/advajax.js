@@ -396,7 +396,7 @@ advAJAX.get = function(args) {
     return advAJAX.handleRequest("GET", args);
 };
 
-advAJAX.delete = function(args) {
+advAJAX.dodelete = function(args) {
 
     return advAJAX.handleRequest("DELETE", args);
 };
