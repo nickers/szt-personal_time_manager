@@ -12,6 +12,8 @@ urlpatterns = patterns('',
     (r'^resources/', include('tms.resources.urls')),
 
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
+    (r'^sdk/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT + "/sdk/", 'show_indexes': True}),
+    (r'^source/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
 
 
     # Uncomment the admin/doc line below to enable admin documentation:

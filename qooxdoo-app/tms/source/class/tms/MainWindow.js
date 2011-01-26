@@ -6,6 +6,8 @@ qx.Class.define("tms.MainWindow",
   construct : function(root)
   {
   	this.do_it(root);
+  	var l = new qx.io.ScriptLoader();
+    l.load("/static/json2.js", function(){}, this);
   },
 
   members: {
@@ -167,23 +169,12 @@ qx.Class.define("tms.MainWindow",
   			  buttonRemove.setEnabled(true);
   			  
   			  var proj = gui.tree.getDataModel().getUserData(nodes[0].nodeId).slug;
-  			  
-  			  var notesData = new tms.NotesData();
-  			  
-  			  var rc = new tms.RuntimeConfig();
-          var dd = new tms.DataDownloader();
-          var ctx = this;
-          dd.fetchData(rc.getUrl("notes")+proj, function(e) {
-//            var nd = new tms.NotesData();
-//            nd.fetchNotes(gui.tree.getDataModel().getUserData(nodes[0].nodeId).id);
-            notesTab.setData(e);
-          },{});
-  			   
+  			  notesTab.setProject(proj);
   			  
   			} else {
   			  this.setValue("");
   			  buttonRemove.setEnabled(false);
-  			  notesTab.setEmpty();
+  			  notesTab.setProject(null);
   			}
 		  },
 		o);
@@ -195,11 +186,12 @@ qx.Class.define("tms.MainWindow",
 		  "execute",
 		  function(e)
 		  {
+		    var dataModel = gui.tree.getDataModel();
   			var selectedNodes = gui.tree.getSelectedNodes();
   			for (var i = 0; i < selectedNodes.length; i++)
   			{
-  //			  dataModel.prune(selectedNodes[i].nodeId, true);
-  //			  dataModel.setData();
+  			  dataModel.prune(selectedNodes[i].nodeId, true);
+  			  dataModel.setData();
   			}
 		  });
 

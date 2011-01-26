@@ -5,7 +5,7 @@ from piston.utils import rc
 # handlers
 class AuthBaseHandler(BaseHandler):
     allowed_methods = ('GET', 'DELETE', 'PUT', 'POST')
-    model = None # Model
+#    model = None # Model
     model_filter = None # AuthProject # filter
     fields = ('name', 'slug', 'start_date', 'parent_project', 'planned_work', 'budget', 'description', ('user',('id','username')))
 
@@ -22,7 +22,25 @@ class AuthBaseHandler(BaseHandler):
 
     def create(self, request, *args, **kwargs):
         self.pre_create(request, *args, **kwargs)
-        return super(self).create(self, request, *args, **kwargs)
+        
+        if not self.has_model():
+            return rc.NOT_IMPLEMENTED
+    
+        attrs = request.data
+        print "ATTRS", attrs
+        
+        try:
+#            inst = self.model.objects.get(**attrs)
+#            return rc.DUPLICATE_ENTRY
+#        except self.model.DoesNotExist:
+            inst = self.model(**attrs)
+            inst.save()
+            return inst
+        except self.model.MultipleObjectsReturned:
+            return rc.DUPLICATE_ENTRY
+        except Exception as e:
+            print "Exception:", e
+
     
     def read(self, request, id=None, *args, **kwargs):
         """

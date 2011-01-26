@@ -46,13 +46,20 @@ class AuthProjectHandler(AuthBaseHandler):
     fields = ('id', 'name', 'slug', 'start_date', ('parent_project', ('id','name','slug')), 'planned_work', 'budget', 'description', ('user',('id','username')))
     
     def pre_create(self, request, *args, **kwargs):
-        request.POST['user'] = request.user.id
+        request.data['user'] = request.user
 
 
 class AuthNoteHandler(AuthBaseHandler):
     model = Note
+    allowed_methods = ('GET', 'DELETE', 'POST')
     model_filter = AuthNote
     fields = ('id', 'name', 'description', ('files', ('id','file')), ('project', ('id', 'name')), 'add_time')
+    
+    def pre_create(self, request, *args, **kwargs):
+        try:
+            request.data['project_id'] = Project.objects.filter(user=request.user).get(slug=kwargs['project']).id
+        except Exception as e:
+            print e
 
 class AuthTimeEventHandler(AuthBaseHandler):
     model = TimeEvent

@@ -18,7 +18,7 @@ function advAJAX() {
     obj.jsonParameters = new Object();
     obj.headers = new Object();
     obj.async = true;
-    obj.mimeType = "text/xml";
+    obj.mimeType = "application/json";
     obj.username = null;
     obj.password = null;
     obj.form = null;
@@ -65,24 +65,24 @@ function advAJAX() {
         if (typeof XMLHttpRequest != "undefined")
             return new XMLHttpRequest();
         var xhrVersion = [ "MSXML2.XMLHttp.5.0", "MSXML2.XMLHttp.4.0","MSXML2.XMLHttp.3.0",
-                "MSXML2.XMLHttp","Microsoft.XMLHttp" ];
+        "MSXML2.XMLHttp","Microsoft.XMLHttp" ];
         for (var i = 0; i < xhrVersion.length; i++) {
             try {
                 var xhrObj = new ActiveXObject(xhrVersion[i]);
                 return xhrObj;
-            } catch (e) { }
+            } catch (e) {
+            }
         }
         obj.raiseEvent("FatalError");
         return null;
     };
-
     obj._oldResponseLength = null;
     obj._progressTimer = null;
     obj._progressStarted = navigator.userAgent.indexOf('Opera') == -1;
     obj._onProgress = function() {
 
         if (typeof obj.onProgress == "function" &&
-            typeof obj.xmlHttpRequest.getResponseHeader == "function") {
+        typeof obj.xmlHttpRequest.getResponseHeader == "function") {
             var contentLength = obj.xmlHttpRequest.getResponseHeader("Content-length");
             if (contentLength != null && contentLength != '') {
                 var responseLength = obj.xmlHttpRequest.responseText.length;
@@ -92,7 +92,8 @@ function advAJAX() {
                 }
             }
         }
-        if (obj._progressStarted) return;
+        if (obj._progressStarted)
+            return;
         obj._progressStarted = true;
         var _obj = this;
         this.__onProgress = function() {
@@ -101,7 +102,6 @@ function advAJAX() {
         }
         _obj.__onProgress();
     }
-
     obj._onInitializationHandled = false;
     obj._initObject = function() {
 
@@ -120,18 +120,25 @@ function advAJAX() {
             obj.raiseEvent("ReadyStateChange", obj, obj.xmlHttpRequest.readyState);
             obj._onProgress();
             switch (obj.xmlHttpRequest.readyState) {
-                case 1: obj._onLoading(); break;
-                case 2: obj._onLoaded(); break;
-                case 3: obj._onInteractive(); break;
-                case 4: obj._onComplete(); break;
+                case 1:
+                    obj._onLoading();
+                    break;
+                case 2:
+                    obj._onLoaded();
+                    break;
+                case 3:
+                    obj._onInteractive();
+                    break;
+                case 4:
+                    obj._onComplete();
+                    break;
             }
         };
         obj._onLoadingHandled =
-            obj._onLoadedHandled =
-            obj._onInteractiveHandled =
-            obj._onCompleteHandled = false;
+        obj._onLoadedHandled =
+        obj._onInteractiveHandled =
+        obj._onCompleteHandled = false;
     };
-
     obj._onLoading = function() {
 
         if (obj._onLoadingHandled)
@@ -182,7 +189,8 @@ function advAJAX() {
         obj.raiseEvent("Complete", obj);
         obj._onCompleteHandled = true;
         if (obj.status == 200)
-            obj.raiseEvent("Success", obj); else
+            obj.raiseEvent("Success", obj);
+        else
             obj.raiseEvent("Error", obj);
         delete obj.xmlHttpRequest['onreadystatechange'];
         obj.xmlHttpRequest = null;
@@ -191,7 +199,6 @@ function advAJAX() {
         obj._groupLeave();
         obj.raiseEvent("Finalization", obj);
     };
-
     obj._groupLeave = function() {
 
         if (obj.group != null) {
@@ -200,7 +207,6 @@ function advAJAX() {
                 obj.raiseEvent("GroupLeave", obj);
         }
     };
-
     obj._retry = false;
     obj._retryNo = 0;
     obj._onTimeout = function() {
@@ -230,8 +236,7 @@ function advAJAX() {
             obj.raiseEvent("Finalization", obj);
         }
     };
-
-    obj.run = function() {
+    obj.run = function(raw_data) {
 
         obj._initObject();
         if (obj.xmlHttpRequest == null)
@@ -249,7 +254,8 @@ function advAJAX() {
                 if (obj.queryString.length > 0)
                     obj.queryString += "&";
                 if (typeof obj.parameters[a] != "object")
-                    obj.queryString += encodeURIComponent(a) + "=" + encodeURIComponent(obj.parameters[a]); else {
+                    obj.queryString += encodeURIComponent(a) + "=" + encodeURIComponent(obj.parameters[a]);
+                else {
                     for (var i = 0; i < obj.parameters[a].length; i++)
                         obj.queryString += encodeURIComponent(a) + "=" + encodeURIComponent(obj.parameters[a][i]) + "&";
                     obj.queryString = obj.queryString.slice(0, -1);
@@ -261,7 +267,8 @@ function advAJAX() {
                     obj.queryString += "&";
                 obj.queryString += encodeURIComponent(a) + "=";
                 if (useJson)
-                    obj.queryString += encodeURIComponent(obj.jsonParameters[a].toJSONString()); else
+                    obj.queryString += encodeURIComponent(obj.jsonParameters[a].toJSONString());
+                else
                     obj.queryString += encodeURIComponent(obj.jsonParameters[a]);
             }
             if (obj.method == "GET" && obj.queryString.length > 0)
@@ -282,11 +289,14 @@ function advAJAX() {
                 obj.xmlHttpRequest.setRequestHeader(encodeURIComponent(a), encodeURIComponent(obj.headers[a]));
         if (obj.method == "POST" && typeof obj.xmlHttpRequest.setRequestHeader != "undefined") {
             obj.xmlHttpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            obj.xmlHttpRequest.send(obj.queryString);
-        } else if (obj.method == "GET")
+            if (raw_data) {
+                obj.xmlHttpRequest.setRequestHeader("Content-type", "application/json");
+                obj.xmlHttpRequest.send(raw_data);
+            } else
+                obj.xmlHttpRequest.send(obj.queryString);
+        } else if (obj.method == "GET" || obj.method == "DELETE")
             obj.xmlHttpRequest.send('');
     };
-
     obj.handleArguments = function(args) {
 
         if (typeof args.form == "object" && args.form != null) {
@@ -295,31 +305,30 @@ function advAJAX() {
         }
         for (a in args) {
             if (typeof obj[a] == "undefined")
-                obj.parameters[a] = args[a]; else {
+                obj.parameters[a] = args[a];
+            else {
                 if (a != "parameters" && a != "headers")
-                    obj[a] = args[a]; else
+                    obj[a] = args[a];
+                else
                     for (b in args[a])
                         obj[a][b] = args[a][b];
             }
         }
         obj.method = obj.method.toUpperCase();
     };
-
     obj.switchForm = function(enable) {
 
         if (typeof obj.form != "object" || obj.form == null)
             return;
-        with (obj.form)
-            for (var nr = 0; nr < elements.length; nr++)
-                if (!enable) {
-                    if (elements[nr]["disabled"])
-                        elements[nr]["_disabled"] = true; else
-                        elements[nr]["disabled"] = "disabled";
-                } else
-                    if (typeof elements[nr]["_disabled"] == "undefined")
-                        elements[nr].removeAttribute("disabled");
+        with (obj.form) for (var nr = 0; nr < elements.length; nr++)
+            if (!enable) {
+                if (elements[nr]["disabled"])
+                    elements[nr]["_disabled"] = true;
+                else
+                    elements[nr]["disabled"] = "disabled";
+            } else if (typeof elements[nr]["_disabled"] == "undefined")
+                elements[nr].removeAttribute("disabled");
     };
-
     obj.appendForm = function() {
 
         with (obj.form) {
@@ -355,13 +364,13 @@ function advAJAX() {
             }
         }
     };
-
     obj.addParameter = function(name, value) {
         if (typeof obj.parameters[name] == "undefined")
-            obj.parameters[name] = value; else
-        if (typeof obj.parameters[name] != "object")
-            obj.parameters[name] = [ obj.parameters[name], value ]; else
-        obj.parameters[name][obj.parameters[name].length] = value;
+            obj.parameters[name] = value;
+        else if (typeof obj.parameters[name] != "object")
+            obj.parameters[name] = [ obj.parameters[name], value ];
+        else
+            obj.parameters[name][obj.parameters[name].length] = value;
     };
     obj.delParameter = function(name) {
 
@@ -376,7 +385,6 @@ function advAJAX() {
         if (name == "FatalError")
             obj.raiseEvent("Finalization", obj);
     }
-
     if (typeof advAJAX._defaultParameters != "undefined")
         obj.handleArguments(advAJAX._defaultParameters);
     return obj;
@@ -386,17 +394,14 @@ advAJAX.get = function(args) {
 
     return advAJAX.handleRequest("GET", args);
 };
-
 advAJAX.post = function(args) {
 
     return advAJAX.handleRequest("POST", args);
 };
-
 advAJAX.head = function(args) {
 
     return advAJAX.handleRequest("HEAD", args);
 };
-
 advAJAX.submit = function(form, args) {
 
     if (typeof args == "undefined" || args == null)
@@ -408,7 +413,6 @@ advAJAX.submit = function(form, args) {
     request.handleArguments(args);
     return request.run();
 };
-
 advAJAX.assign = function(form, args) {
 
     if (typeof args == "undefined" || args == null)
@@ -427,7 +431,6 @@ advAJAX.assign = function(form, args) {
     }
     return true;
 };
-
 advAJAX.download = function(targetObj, url) {
 
     if (typeof targetObj == "string")
@@ -441,7 +444,6 @@ advAJAX.download = function(targetObj, url) {
         }
     });
 };
-
 advAJAX.scan = function() {
 
     var obj = document.getElementsByTagName("a");
@@ -455,21 +457,23 @@ advAJAX.scan = function() {
             parent.insertBefore(div, obj[i]);
             parent.removeChild(obj[i]);
             advAJAX.download(div, url);
-        } else i++;
+        } else
+            i++;
     }
 };
-
 advAJAX.handleRequest = function(requestType, args) {
 
     if (typeof args == "undefined" || args == null)
         return -1;
+    var raw_data = null;
+    if ('raw_data' in args) raw_data = args.raw_data;
+
     var request = new advAJAX();
     window.advajax_obj = request;
     request.method = requestType;
     request.handleArguments(args);
-    return request.run();
+    return request.run(raw_data);
 };
-
 advAJAX._defaultParameters = new Object();
 advAJAX.setDefaultParameters = function(args) {
 
@@ -477,5 +481,4 @@ advAJAX.setDefaultParameters = function(args) {
     for (a in args)
         advAJAX._defaultParameters[a] = args[a];
 };
-
 advAJAX._groupData = new Object();
