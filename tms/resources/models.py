@@ -46,7 +46,15 @@ class AuthProjectHandler(AuthBaseHandler):
     fields = ('id', 'name', 'slug', 'start_date', ('parent_project', ('id','name','slug')), 'planned_work', 'budget', 'description', ('user',('id','username')))
     
     def pre_create(self, request, *args, **kwargs):
-        request.data['user'] = request.user
+        try:
+            request.data['user'] = request.user
+        except Exception as e:
+            print e
+            
+    def delete(self, request, **kwargs):
+        if len(kwargs)==0:
+            return rc.BAD_REQUEST
+        return super(AuthProjectHandler,self).delete(request, kwargs)
 
 
 class AuthNoteHandler(AuthBaseHandler):

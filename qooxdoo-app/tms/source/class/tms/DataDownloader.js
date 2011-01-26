@@ -6,12 +6,13 @@ qx.Class.define( "tms.DataDownloader", {
   members : {
     fetchData : function(url, callback, params) {
       if (!params) params = {};
+
       if (typeof(advAJAX)=="undefined") {
         this.ensureLoaded(function() {this.fetchData(url,callback,params);} );
       } else {
         advAJAX.get({
           url: url, 
-          onSuccess: function(r) { var j=eval(r.responseText); callback(j); }
+          onSuccess: function(r) { var j=JSON.parse(r.responseText); callback(j); }
         });
       }
     },
@@ -32,7 +33,7 @@ qx.Class.define( "tms.DataDownloader", {
     ,
     ensureLoaded : function(f) {
       var l = new qx.io.ScriptLoader();
-      l.load("/static/advajax.js", f, this);
+      l.load("/static/advajax.js?pseduo="+(new Date().getTime()), f, this);
     }
   }
 });

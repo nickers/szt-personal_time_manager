@@ -30,9 +30,6 @@ class AuthBaseHandler(BaseHandler):
         print "ATTRS", attrs
         
         try:
-#            inst = self.model.objects.get(**attrs)
-#            return rc.DUPLICATE_ENTRY
-#        except self.model.DoesNotExist:
             inst = self.model(**attrs)
             inst.save()
             return inst
@@ -59,9 +56,9 @@ class AuthBaseHandler(BaseHandler):
         else:
             return self.post_read(request, id, base.all())
 
-    def delete(self, request, id):
+    def delete(self, request, filters):
         base = self.model_filter(request.user).get()
-        base.filter(pk=id).delete()
+        base.filter(**filters).delete()
         return rc.DELETED
 
     def update(self, request, id):

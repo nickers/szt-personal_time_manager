@@ -6,8 +6,6 @@ qx.Class.define("tms.MainWindow",
   construct : function(root)
   {
   	this.do_it(root);
-  	var l = new qx.io.ScriptLoader();
-    l.load("/static/json2.js", function(){}, this);
   },
 
   members: {
@@ -25,6 +23,7 @@ qx.Class.define("tms.MainWindow",
 
 	fill_tree_with_data : function(tree, data) {
     var dataModel = tree.getDataModel();
+    dataModel.clearData();
     var keys = ['name','description','start_date']
 
     var added = {};
@@ -45,14 +44,14 @@ qx.Class.define("tms.MainWindow",
       }
       dataModel.setUserData(nd, real_data);
       
-      added[real_data.name] = nd;
+      added[real_data.slug] = nd;
     }
     
     dataModel.setData();
   },
 
 	create_main_gui : function() {
-	  var gui = { pane:null, tree:null, buttons:[] };
+	  var gui = { pane:null, tree:null, buttons:[], project_data:null };
 	  
 	  
 
@@ -73,15 +72,16 @@ qx.Class.define("tms.MainWindow",
 	  treeButtons.setLayout(new qx.ui.layout.VBox(5));
 	  
 	  var buttonsData = [
-  		["add_project","Dodaj projekt główny"], 
-  		["add_task", "Dodaj zadanie"],
-  		["remove", "Usuń"],
-  		["refresh_projects", "Odśwież"]
+  		["add_project","Dodaj projekt główny", true], 
+  		["add_task", "Dodaj zadanie", false],
+  		["remove", "Usuń", false],
+  		["refresh", "Odśwież", true]
 	  ];
 
-	  for (var i in buttonsData) {
+	  for (var i=0; i<buttonsData.length; i++) {
 	  	var b = buttonsData[i];
 	  	gui.buttons[b[0]] = new qx.ui.form.Button(b[1]);
+	  	gui.buttons[b[0]].setEnabled(b[2]);
 	  	treeButtons.add(gui.buttons[b[0]]);
 	  }
 
@@ -97,6 +97,7 @@ qx.Class.define("tms.MainWindow",
 	  
 	  // ## *** data *** ## //
     var data_src = new tms.ProjectsData();
+    gui.project_data = data_src;
     
     data_src.addListener("changeProjects", function(e) {
         if (e.getData()!=null) this.fill_tree_with_data(gui.tree, e.getData());
@@ -105,6 +106,8 @@ qx.Class.define("tms.MainWindow",
     );
         
     main_pane.addListener("appear", function () { data_src.fetchProjects(); }, this);
+    
+    gui.buttons["refresh"].addListener("execute", function () { data_src.fetchProjects(); }, this);
     
     
 	  return gui;
@@ -168,12 +171,20 @@ qx.Class.define("tms.MainWindow",
   			  this.setValue(gui.tree.getHierarchy(nodes[0].nodeId).join('/'));
   			  buttonRemove.setEnabled(true);
   			  
-  			  var proj = gui.tree.getDataModel().getUserData(nodes[0].nodeId).slug;
+  			  // tabs on bottom
+  			  var proj_obj = gui.tree.getDataModel().getUserData(nodes[0].nodeId);
+  			  var proj = proj_obj.slug;
   			  notesTab.setProject(proj);
+  			  
+  			  // remove proj button
+          gui.buttons["remove"].setEnabled(true);
+          gui.buttons["add_task"].setEnabled(proj_obj.parent_project?false:true);
   			  
   			} else {
   			  this.setValue("");
   			  buttonRemove.setEnabled(false);
+  			  gui.buttons["remove"].setEnabled(false);
+  			  gui.buttons["add_task"].setEnabled(false);
   			  notesTab.setProject(null);
   			}
 		  },

@@ -372,6 +372,7 @@ function advAJAX() {
         else
             obj.parameters[name][obj.parameters[name].length] = value;
     };
+
     obj.delParameter = function(name) {
 
         delete obj.parameters[name];
@@ -394,6 +395,12 @@ advAJAX.get = function(args) {
 
     return advAJAX.handleRequest("GET", args);
 };
+
+advAJAX.delete = function(args) {
+
+    return advAJAX.handleRequest("DELETE", args);
+};
+
 advAJAX.post = function(args) {
 
     return advAJAX.handleRequest("POST", args);

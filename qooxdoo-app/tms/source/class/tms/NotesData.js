@@ -7,6 +7,7 @@ qx.Class.define( "tms.NotesData", {
       var ctx = this;
       dd.fetchData(rc.getUrl("notes") + proj_slug.toString(), function(e) {
         ctx.model = e;
+        console.log(typeof(e));
         ctx.fireDataEvent("changeNotes", e);
         if (func) func(e);
       },{});
