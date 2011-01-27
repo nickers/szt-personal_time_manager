@@ -138,6 +138,14 @@ qx.Class.define("tms.NotesTab",
           var txt = "<b>" + pola[itm] + ":</b> " + note[itm];
           noteGroup.add(new qx.ui.basic.Label(txt).set({rich:true}));
         }
+        if (note['files'] && note['files'].length>0) {
+          noteGroup.add(new qx.ui.basic.Label("<b>Pliki:</b>").set({rich:true}));
+          var _l = "<ul>";
+          for(var f=0; f<note['files'].length; f++)
+            _l = _l + "<li><a href=\"/files/"+note.files[f].file+"\">"+note.name+"</a></li>";
+          _l = _l + "</ul>";
+          noteGroup.add(new qx.ui.embed.Html(_l));
+        }
         group.add(noteGroup);
       }
     }

@@ -42,7 +42,7 @@ def bilans(request, project):
     return HttpResponse(json.dumps(r))
 
 def upload_file(request, project):
-    
+    print project
     if request.method == 'POST':
         form = UploadedFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -53,6 +53,7 @@ def upload_file(request, project):
             
             note = Note()
             note.project = Project.objects.get(slug=project)
+            print note.project
             note.name = request.FILES['file'].name
             note.description = "Rozmiar: " + str(round(request.FILES['file'].size/(1024.0*1024.0),5)) + "MB"
             note.save()

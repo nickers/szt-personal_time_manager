@@ -15,6 +15,8 @@ urlpatterns = patterns('',
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
     (r'^sdk/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT + "/sdk/", 'show_indexes': True}),
     (r'^source/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
+    
+    (r'^files/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.DRAFT_UPLOADED_FILES_DIR, 'show_indexes': True}),
 
 
     # Uncomment the admin/doc line below to enable admin documentation:
