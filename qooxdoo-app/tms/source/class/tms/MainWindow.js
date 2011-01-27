@@ -170,7 +170,10 @@ qx.Class.define("tms.MainWindow",
 		var conta = new qx.ui.container.Scroll();
 		conta.add(commandFrame, { border: 0 } );
 		page1.add(conta);
-		tabView.add(page1);
+		//tabView.add(page1);
+
+    var statsTab = new tms.StatsTab();
+    tabView.add(statsTab);
 
     var ganttTab = new tms.GanttTab();
     tabView.add(ganttTab);
@@ -205,6 +208,7 @@ qx.Class.define("tms.MainWindow",
   			  // tabs on bottom
   			  var proj_obj = gui.tree.getDataModel().getUserData(nodes[0].nodeId);
   			  var proj = proj_obj.slug;
+  			  statsTab.setProject(proj);
   			  notesTab.setProject(proj);
   			  ganttTab.setProject(proj);
   			  
@@ -220,6 +224,7 @@ qx.Class.define("tms.MainWindow",
   			  gui.buttons["add_task"].setEnabled(false);
   			  gui.buttons["add_event"].setEnabled(false);
   			  notesTab.setProject(null);
+  			  statsTab.setProject(null);
   			}
 		  },
 		o);

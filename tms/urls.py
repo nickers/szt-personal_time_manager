@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     # Example:
     # (r'^tms/', include('tms.foo.urls')),
 
+    (r'^draft/', include('tms.draft.urls')),
     (r'^resources/', include('tms.resources.urls')),
 
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
