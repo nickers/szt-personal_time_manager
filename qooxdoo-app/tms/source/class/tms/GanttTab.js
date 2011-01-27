@@ -42,8 +42,16 @@ qx.Class.define("tms.GanttTab",
       
       var appear_listener = null;
       appear_listener = g.addListener("appear", function() {
+        var ctx = this;
+        var gd = new tms.EventsData();
         g.removeListenerById(appear_listener);
-        showGantt();
+        gd.fetchEvents("projekt_nr_1", function(e){
+          var d = ctx.__prepare_data(e);
+          showGantt(d);
+        });
+        
+        //g.removeListenerById(appear_listener);
+        //showGantt(ganttData);
         //alert($("#ganttChart").height());
         //$("#ganttChart").hide();
         $("#ganttChart").width('98%');
@@ -105,6 +113,47 @@ qx.Class.define("tms.GanttTab",
       
       this.notes_pane = notes;
       return notes;
+    },
+    
+    __prepare_data : function (data) {
+            /*
+            {
+              "project": {
+                "id": 1, 
+                "name": "projekt nr 1", 
+                "slug": "projekt_nr_1"
+              }, 
+              "start_time": "2011-01-26 03:34:38", 
+              "end_time": "2011-01-27 03:34:41", 
+              "comments": ""
+            },
+            
+            
+            {
+              id: 1, name: "Feature 1", series: [
+                { name: "Planned", time:[
+                      {start: new Date(2010,00,01), end: new Date(2010,00,03)},
+                      {start: new Date(2010,00,01), end: new Date(2010,00,03)}] 
+                },
+                { name: "Actual", start: new Date(2010,00,02), end: new Date(2010,00,05), color: "#f0f0f0" }
+              ]
+            }, */ 
+            var d = {};
+            data.forEach(function(o){
+              if (!(o.project.id in d)) {
+                d[o.project.id] = {id:o.project.id, name:o.project.name, series: [{name:"", time: [] }]}
+              }
+              d[o.project.id].series[0].time.unshift({start:new Date(o.start_time), end:new Date(o.end_time)});
+//              d[o.project.id].series.unshift({name:o.project.name, start:new Date(o.start_time), end:new Date(o.end_time)});
+            });
+            
+            var r = [];
+//            d.forEach(function(o){
+            for (var i in d) {
+              var o = d[i];
+              r.unshift(o);
+            };
+            return r;
     },
     
     setProject : function(proj_slug) {
@@ -173,3 +222,4 @@ qx.Class.define("tms.GanttTab",
     }
   }
 });
+

@@ -1,4 +1,4 @@
-function showGantt() {
+function showGantt(ganttData) {
   $("#ganttChart").ganttView({ 
     data: ganttData,
     slideWidth: '100%',

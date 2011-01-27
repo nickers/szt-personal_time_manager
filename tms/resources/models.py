@@ -13,6 +13,7 @@ class AuthProject():
         self.exclude = ('id','user')
     def get(self, filter=None):
         res = self.objects
+        print "GET: ", filter
         which = {}
         if filter:
             for w in ["id","slug","user__id"]:

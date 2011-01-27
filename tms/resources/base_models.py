@@ -47,8 +47,11 @@ class AuthBaseHandler(BaseHandler):
         
         self.pre_read(request, id, *args, **kwargs)
         
-        base = self.model_filter(request.user).get(kwargs['project_slug'])
-        del kwargs['project_slug']
+        if 'project_slug' in kwargs:
+            base = self.model_filter(request.user).get(kwargs['project_slug'])
+            del kwargs['project_slug']
+        else:
+            base = self.model_filter(request.user).get()
         
         if id:
             try:

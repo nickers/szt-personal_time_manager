@@ -260,25 +260,35 @@ behavior: {
             for (var i = 0; i < data.length; i++) {
                 for (var j = 0; j < data[i].series.length; j++) {
                     var series = data[i].series[j];
-                    var size = DateUtils.daysBetween(series.start, series.end) + 1;
-					var offset = DateUtils.daysBetween(start, series.start);
-					var block = jQuery("<div>", {
-                        "class": "ganttview-block",
-                        "title": series.name + ", " + size + " days",
-                        "css": {
-                            "width": ((size * cellWidth) - 9) + "px",
-                            "margin-left": ((offset * cellWidth) + 3) + "px"
-                        }
-                    });
-                    addBlockData(block, data[i], series);
-                    if (data[i].series[j].color) {
-                        block.css("background-color", data[i].series[j].color);
+                    for (var t=0; t<series.time.length; t++) {
+                          //var size = DateUtils.daysBetween(series.start, series.end) + 1;
+                          var size = DateUtils.daysBetween(series.time[t].start, series.time[t].end) + 1;
+                					//var offset = DateUtils.daysBetween(start, series.start);
+                					var offset = DateUtils.daysBetween(start, series.time[t].start);
+                					var hours = Math.round((series.time[t].end - series.time[t].start)/(1000.0*3600.0/10.0))/10.0;
+
+                					var css = {
+                                "width": ((size * cellWidth) - 9) + "px",
+                                "margin-left": ((offset * cellWidth) + 3) + "px"
+                          };
+                					if (t>0) {
+                					  css["margin-top"] = "-27px";
+                					}
+                					var block = jQuery("<div>", {
+                              "class": "ganttview-block",
+                              "title": series.name + ", " + hours + " godzin",
+                              "css": css
+                          });
+                          addBlockData(block, data[i], series);
+                          if (data[i].series[j].color) {
+                              block.css("background-color", data[i].series[j].color);
+                          }
+                          block.append(jQuery("<div>", { "class": "ganttview-block-text" }).text(hours));
+                          jQuery(rows[rowIdx]).append(block);
                     }
-                    block.append(jQuery("<div>", { "class": "ganttview-block-text" }).text(size));
-                    jQuery(rows[rowIdx]).append(block);
 		    
 		    
-		    offset = offset+5;
+		    /*offset = offset+5;
 		    
 		    var block2 = jQuery("<div>", {
                         "class": "ganttview-block",
@@ -313,7 +323,7 @@ behavior: {
                     }
                     block3.append(jQuery("<div>", { "class": "ganttview-block-text" }).text('25 days'));
                     jQuery(rows[rowIdx]).append(block3);
-		    
+		    */
 		    
                     rowIdx = rowIdx + 1;
                 }
@@ -425,12 +435,19 @@ behavior: {
     var DateUtils = {
     	
         daysBetween: function (start, end) {
-            if (!start || !end) { return 0; }
-            start = Date.parse(start); end = Date.parse(end);
-            if (start.getYear() == 1901 || end.getYear() == 8099) { return 0; }
-            var count = 0, date = start.clone();
-            while (date.compareTo(end) == -1) { count = count + 1; date.addDays(1); }
-            return count;
+            var f = function(start,end) {
+                if (!start || !end) { return 0; }
+                start = Date.parse(start); end = Date.parse(end);
+                if (start.getYear() == 1901 || end.getYear() == 8099) { return 0; }
+                var count = 0, date = start.clone();
+                while (date.compareTo(end) == -1) { count = count + 1; date.addDays(1); }
+                return count;
+            };
+            var s = start.clone();
+            s.setHours(0);s.setMinutes(0);s.setSeconds(0);
+            var e = end.clone();
+            e.setHours(0);e.setMinutes(0);e.setSeconds(0);
+            return f(s,e);
         },
         
         isWeekend: function (date) {
@@ -441,11 +458,17 @@ behavior: {
 			var minStart = new Date(); maxEnd = new Date();
 			for (var i = 0; i < data.length; i++) {
 				for (var j = 0; j < data[i].series.length; j++) {
-					var start = Date.parse(data[i].series[j].start);
-					var end = Date.parse(data[i].series[j].end)
-					if (i == 0 && j == 0) { minStart = start; maxEnd = end; }
-					if (minStart.compareTo(start) == 1) { minStart = start; }
-					if (maxEnd.compareTo(end) == -1) { maxEnd = end; }
+				  
+				  for (var k = 0; k < data[i].series[j].time.length; k++) {
+				     
+    					var start = Date.parse(data[i].series[j].time[k].start);
+    					var end = Date.parse(data[i].series[j].time[k].end)
+    					if (i == 0 && j == 0) { minStart = start; maxEnd = end; }
+    					if (minStart.compareTo(start) == 1) { minStart = start; }
+    					if (maxEnd.compareTo(end) == -1) { maxEnd = end; }
+    					
+    			}
+    			
 				}
 			}
 			
