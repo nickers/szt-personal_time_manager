@@ -164,11 +164,10 @@ behavior: {
       
       dates.forEach(function(oy){
         var y = dates.indexOf(oy);
-        console.log(y);
+
         //for (var m=0; m<dates[y].length; m++) {
           oy.forEach(function(om) {
             var m = oy.indexOf(om);
-            console.log(" >> " + y + " # " + m);
             var w = dates[y][m].length * cellWidth;
             totalW = totalW + w;
             monthsDiv.append(jQuery("<div>", {
@@ -177,7 +176,6 @@ behavior: {
             }).append(monthNames[m] + "/" + y));
             
             for (var d=0; d<dates[y][m].length; d++) {
-              console.log(d + " :=> " + dates[y][m][d]);
               daysDiv.append(jQuery("<div>", { "class": "ganttview-hzheader-day" })
                 .append(dates[y][m][d].getDate()));
             }
