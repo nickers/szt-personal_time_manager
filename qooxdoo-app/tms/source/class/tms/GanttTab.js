@@ -36,6 +36,11 @@ qx.Class.define("tms.GanttTab",
         $("#ganttChart").width('98%');
       },
       this);
+      g.addListener("appear", function() {
+        $("#ganttChart").width('98%');
+        $("#ganttChart").height('auto');
+      },
+      this);
       scr.add(g);
       return g;
 
@@ -78,9 +83,10 @@ qx.Class.define("tms.GanttTab",
     displayGantt : function(slug) {
       var ctx = this;
       var gd = new tms.EventsData();
-      $("#ganttChart").innerHTML = "";
+      $("#ganttChart").innerHTML = "Trwa generowanie...";
       gd.fetchEvents(slug, function(e){
         var d = ctx.__prepare_data(e);
+        $("#ganttChart").innerHTML = "";
         if (e.length>0) {
           showGantt(d);
         }
