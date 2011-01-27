@@ -68,7 +68,7 @@ behavior: {
 			var startEnd = DateUtils.getBoundaryDatesFromData(opts.data, minDays);
 			opts.start = startEnd[0];
 			opts.end = startEnd[1];
-			
+						
 	        els.each(function () {
 
 	            var container = jQuery(this);
@@ -400,6 +400,7 @@ behavior: {
     					var start = Date.parse(data[i].series[j].time[k].start);
     					var end = Date.parse(data[i].series[j].time[k].end)
     					if (i == 0 && j == 0) { minStart = start; maxEnd = end; }
+    					
     					if (minStart.compareTo(start) == 1) { minStart = start; }
     					if (maxEnd.compareTo(end) == -1) { maxEnd = end; }
     					

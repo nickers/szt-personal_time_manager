@@ -47,7 +47,8 @@ qx.Class.define("tms.GanttTab",
               if (!(o.project.id in d)) {
                 d[o.project.id] = {id:o.project.id, name:o.project.name, series: [{name:"", time: [] }]}
               }
-              d[o.project.id].series[0].time.unshift({start:new Date(o.start_time), end:new Date(o.end_time)});
+              //d[o.project.id].series[0].time.unshift({start:new Date(o.start_time), end:new Date(o.end_time)});
+              d[o.project.id].series[0].time.unshift({start:Date.parse(o.start_time), end:Date.parse(o.end_time)});
             });
             
             var r = [];

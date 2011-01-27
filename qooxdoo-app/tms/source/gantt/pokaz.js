@@ -1,4 +1,5 @@
 function showGantt(ganttData) {
+  try {
   $("#ganttChart").ganttView({ 
     data: ganttData,
     slideWidth: '100%',
@@ -19,6 +20,9 @@ function showGantt(ganttData) {
       }
     }
   });
-  
+  } catch (e) {
+    console.log("Exception : " + e);
+    console.log("Exception : " + e.description);
+  }
   // $("#ganttChart").ganttView("setSlideWidth", 600);
 };
