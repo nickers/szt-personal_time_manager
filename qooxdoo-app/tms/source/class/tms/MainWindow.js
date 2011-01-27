@@ -1,7 +1,6 @@
 qx.Class.define("tms.MainWindow",
 {
   extend : qx.ui.window.Window,
-//    extend : qx.ui.
 
   construct : function(root)
   {

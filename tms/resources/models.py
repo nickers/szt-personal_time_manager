@@ -13,7 +13,6 @@ class AuthProject():
         self.exclude = ('id','user')
     def get(self, filter=None):
         res = self.objects
-        print "GET: ", filter
         which = {}
         if filter:
             for w in ["id","slug","user__id"]:
@@ -29,8 +28,8 @@ class AuthNote():
     def get(self, filter=None):
         res = self.objects
         which = {}
-        if filter and "project" in filter:
-            res = res.filter(project__slug=filter["project"])
+        if filter:
+            res = res.filter(project__slug=filter)
         return res.order_by("-add_time")
 
 class AuthTimeEvent():
@@ -73,7 +72,7 @@ class AuthNoteHandler(AuthBaseHandler):
     
     def pre_create(self, request, *args, **kwargs):
         try:
-            request.data['project_id'] = Project.objects.filter(user=request.user).get(slug=kwargs['project']).id
+            request.data['project_id'] = Project.objects.filter(user=request.user).get(slug=kwargs['project_slug']).id
         except Exception as e:
             print e
 

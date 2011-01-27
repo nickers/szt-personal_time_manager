@@ -13,7 +13,7 @@ qx.Class.define("tms.NotesTab",
   members : {
     __init_notes : function(proj_slug) {
       
-      if (this.notes_pane) {
+     /* if (this.notes_pane) {
         this.notes_pane.removeAll();
         this.add_btn.removeListenerById(this.add_listener);
         this.add_listener = this.add_btn.addListener("execute", function(e) {
@@ -28,7 +28,7 @@ qx.Class.define("tms.NotesTab",
         else this.add_btn.hide();
         
         return this.notes_pane;
-      }
+      }*/
       
       this.removeAll();
       
@@ -116,7 +116,6 @@ qx.Class.define("tms.NotesTab",
     
     setData : function(notes, proj_slug) {
       var group = this.__init_notes(proj_slug);
-      
       this.up_file.removeAll();
       if (proj_slug) {
         var _h = '<form method="post" action="/draft/file/'+proj_slug+'" enctype="multipart/form-data" ' 

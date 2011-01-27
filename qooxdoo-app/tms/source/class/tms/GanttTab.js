@@ -21,16 +21,7 @@ qx.Class.define("tms.GanttTab",
       var g = new qx.ui.container.Composite();
       g.setLayout(new qx.ui.layout.Grow());
       g.add(new qx.ui.embed.Html('<div style="overflow:scroll;width:100%;height:100%;border:1px solid #0c0;"><div id="ganttChart" style="overflow:auto;border:1px solid #c00;"></div><div id="eventMessage"></div></div>'));
-      
-      /*
-      g.addListener("appear", function() {
-        if (proj_slug)
-          this.displayGantt(proj_slug);
-        else
-          this.setEmpty();
-      },
-      this);
-      */
+     
       
       g.addListener("resize", function() {
         $("#ganttChart").width('98%');
@@ -52,7 +43,6 @@ qx.Class.define("tms.GanttTab",
               if (!(o.project.id in d)) {
                 d[o.project.id] = {id:o.project.id, name:o.project.name, series: [{name:"", time: [] }]}
               }
-              //d[o.project.id].series[0].time.unshift({start:new Date(o.start_time), end:new Date(o.end_time)});
               d[o.project.id].series[0].time.unshift({start:Date.parse(o.start_time), end:Date.parse(o.end_time)});
             });
             

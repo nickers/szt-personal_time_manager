@@ -16,7 +16,7 @@ urlpatterns = patterns('resources.views',
     (r'^project/(?P<slug>[a-zA-Z0-9_.-]+)$', project_handler),
     
 #    (r'^note/$', note_handler),
-    (r'^note/(?P<project>[a-zA-Z0-9_.-]+)$', note_handler),
+    (r'^note/(?P<project_slug>[a-zA-Z0-9_.-]+)$', note_handler),
     
 #    (r'^event/$', event_handler),
     (r'^event/(?P<project_slug>[a-zA-Z0-9_.-]+)$', event_handler),

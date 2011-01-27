@@ -44,11 +44,13 @@ class AuthBaseHandler(BaseHandler):
         Returns object with given id ("404 Not found" if no object with given id)
         or list of objects. Both are filtered only for logged user.
         """
-        
+        print "A ",     args
+        print "K ", kwargs
         self.pre_read(request, id, *args, **kwargs)
         
         if 'project_slug' in kwargs:
             base = self.model_filter(request.user).get(kwargs['project_slug'])
+            print "base change"
             del kwargs['project_slug']
         else:
             base = self.model_filter(request.user).get()
