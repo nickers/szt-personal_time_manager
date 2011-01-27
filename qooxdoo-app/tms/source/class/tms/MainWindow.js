@@ -128,10 +128,7 @@ qx.Class.define("tms.MainWindow",
         var selectedNodes = gui.tree.getSelectedNodes();
         for (var i = 0; i < selectedNodes.length; i++)
         {
-          alert(dataModel.getUserData(selectedNodes[i].nodeId).slug);
           gui.project_data.deleteProject(dataModel.getUserData(selectedNodes[i].nodeId).slug);
-//          dataModel.prune(selectedNodes[i].nodeId, true);
-//          dataModel.setData();
         }
       }
       gui.project_data.fetchProjects();
@@ -230,7 +227,6 @@ qx.Class.define("tms.MainWindow",
   			var selectedNodes = gui.tree.getSelectedNodes();
   			for (var i = 0; i < selectedNodes.length; i++)
   			{
-  			  alert(dataModel.getUserData(selectedNodes[i].nodeId));
   			  dataModel.prune(selectedNodes[i].nodeId, true);
   			  dataModel.setData();
   			}
