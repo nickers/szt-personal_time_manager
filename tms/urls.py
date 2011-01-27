@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     # Example:
     # (r'^tms/', include('tms.foo.urls')),
 
+    (r'^accounts/', include('registration.urls')),
     (r'^draft/', include('tms.draft.urls')),
     (r'^resources/', include('tms.resources.urls')),
 
@@ -24,4 +25,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
+    (r'^$', 'draft.views.index', {}, 'index')
 )

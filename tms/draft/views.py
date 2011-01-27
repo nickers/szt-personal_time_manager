@@ -1,8 +1,13 @@
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from models import *
 import simplejson as json
 import datetime
+
+@login_required
+def index(request):
+    return HttpResponseRedirect("/static/index.html")
 
 def bilans(request, project):
     r = {}
