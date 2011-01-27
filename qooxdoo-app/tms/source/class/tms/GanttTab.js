@@ -40,7 +40,9 @@ qx.Class.define("tms.GanttTab",
       g.setLayout(new qx.ui.layout.Grow());
       g.add(new qx.ui.embed.Html('<div style="overflow:scroll;width:100%;height:100%;border:1px solid #0c0;"><div id="ganttChart" style="overflow:auto;border:1px solid #c00;"></div><div id="eventMessage"></div></div>'));
       
-      g.addListener("appear", function() {
+      var appear_listener = null;
+      appear_listener = g.addListener("appear", function() {
+        g.removeListenerById(appear_listener);
         showGantt();
         //alert($("#ganttChart").height());
         //$("#ganttChart").hide();
