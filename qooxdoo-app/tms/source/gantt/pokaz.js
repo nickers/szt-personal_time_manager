@@ -3,7 +3,8 @@ function showGantt() {
     data: ganttData,
     slideWidth: '100%',
     behavior: {
-      draggable: false  ,
+      draggable: false,
+      resizable: false,
       onClick: function (data) { 
         var msg = "You clicked on an event: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
         $("#eventMessage").text(msg);

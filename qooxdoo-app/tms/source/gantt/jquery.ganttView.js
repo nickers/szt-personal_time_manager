@@ -161,20 +161,45 @@ behavior: {
             var monthsDiv = jQuery("<div>", { "class": "ganttview-hzheader-months" });
             var daysDiv = jQuery("<div>", { "class": "ganttview-hzheader-days" });
             var totalW = 0;
+      
+      dates.forEach(function(oy){
+        var y = dates.indexOf(oy);
+        console.log(y);
+        //for (var m=0; m<dates[y].length; m++) {
+          oy.forEach(function(om) {
+            var m = oy.indexOf(om);
+            console.log(" >> " + y + " # " + m);
+            var w = dates[y][m].length * cellWidth;
+            totalW = totalW + w;
+            monthsDiv.append(jQuery("<div>", {
+              "class": "ganttview-hzheader-month",
+              "css": { "width": (w - 1) + "px" }
+            }).append(monthNames[m] + "/" + y));
+            
+            for (var d=0; d<dates[y][m].length; d++) {
+              console.log(d + " :=> " + dates[y][m][d]);
+              daysDiv.append(jQuery("<div>", { "class": "ganttview-hzheader-day" })
+                .append(dates[y][m][d].getDate()));
+            }
+          });
+      });
+      /*
 			for (var y in dates) {
-				for (var m in dates[y]) {
+			  console.log("> LEVEL1 : " + y);
+				for (var m=0; m<dates[y].length; m++) {
 					var w = dates[y][m].length * cellWidth;
 					totalW = totalW + w;
 					monthsDiv.append(jQuery("<div>", {
 						"class": "ganttview-hzheader-month",
 						"css": { "width": (w - 1) + "px" }
 					}).append(monthNames[m] + "/" + y));
-					for (var d in dates[y][m]) {
+					for (var d=0; d<dates[y][m].length; d++) {
+					  console.log(d + " :=> " + dates[y][m][d]);
 						daysDiv.append(jQuery("<div>", { "class": "ganttview-hzheader-day" })
 							.append(dates[y][m][d].getDate()));
 					}
-				}
-			}
+
+			}*/
             monthsDiv.css("width", totalW + "px");
             daysDiv.css("width", totalW + "px");
             headerDiv.append(monthsDiv).append(daysDiv);
@@ -184,6 +209,7 @@ behavior: {
         function addGrid(div, data, dates, cellWidth, showWeekends) {
             var gridDiv = jQuery("<div>", { "class": "ganttview-grid" });
             var rowDiv = jQuery("<div>", { "class": "ganttview-grid-row" });
+      /** chrome
 			for (var y in dates) {
 				for (var m in dates[y]) {
 					for (var d in dates[y][m]) {
@@ -194,7 +220,21 @@ behavior: {
 						rowDiv.append(cellDiv);
 					}
 				}
-			}
+			}*/
+			
+			dates.forEach(function(y){
+			  y.forEach(function(m){
+			    m.forEach(function(d){
+			      var cellDiv = jQuery("<div>", { "class": "ganttview-grid-row-cell" });
+            if (DateUtils.isWeekend(d) && showWeekends) { 
+              cellDiv.addClass("ganttview-weekend"); 
+            }
+            rowDiv.append(cellDiv);
+			    });
+			  });
+			});
+			
+			
             var w = jQuery("div.ganttview-grid-row-cell", rowDiv).length * cellWidth;
             rowDiv.css("width", w + "px");
             gridDiv.css("width", w + "px");
