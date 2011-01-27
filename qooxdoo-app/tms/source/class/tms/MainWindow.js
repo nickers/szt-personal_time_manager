@@ -51,7 +51,7 @@ qx.Class.define("tms.MainWindow",
   },
 
 	create_main_gui : function() {
-	  var gui = { pane:null, tree:null, buttons:[], project_data:null };
+	  var gui = { pane:null, tree:null, buttons:[], project_data:null, events_data:null };
 	  
 	  
 
@@ -74,6 +74,7 @@ qx.Class.define("tms.MainWindow",
 	  var buttonsData = [
   		["add_project","Dodaj projekt główny", true], 
   		["add_task", "Dodaj zadanie", false],
+  		["add_event", "Dodaj czas", false],
   		["remove", "Usuń", false],
   		["refresh", "Odśwież", true]
 	  ];
@@ -98,6 +99,7 @@ qx.Class.define("tms.MainWindow",
 	  // ## *** data *** ## //
     var data_src = new tms.ProjectsData();
     gui.project_data = data_src;
+    gui.events_data = new tms.EventsData();;
     
     data_src.addListener("changeProjects", function(e) {
         if (e.getData()!=null) this.fill_tree_with_data(gui.tree, e.getData());
@@ -118,6 +120,14 @@ qx.Class.define("tms.MainWindow",
       var selectedNodes = gui.tree.getSelectedNodes();
       var slug = dataModel.getUserData(selectedNodes[0].nodeId).slug;
       var addWindow = new tms.AddProjectWindow(gui.project_data, slug);
+      addWindow.show();
+    }, this);
+    
+    gui.buttons["add_event"].addListener("execute", function() {
+      var dataModel = gui.tree.getDataModel();
+      var selectedNodes = gui.tree.getSelectedNodes();
+      var slug = dataModel.getUserData(selectedNodes[0].nodeId).slug;
+      var addWindow = new tms.AddEventWindow(gui.events_data, slug);
       addWindow.show();
     }, this);
     
@@ -162,16 +172,8 @@ qx.Class.define("tms.MainWindow",
 		page1.add(conta);
 		tabView.add(page1);
 
-/*		var page2 = new qx.ui.tabview.Page("Gantt", "icon/16/apps/utilities-terminal.png");
-		page2.setLayout(new qx.ui.layout.Grow());
-		conta = new qx.ui.container.Scroll();
-		conta.add(commandFrame, { border: 0 } );
-		page1.add(conta);
-		tabView.add(page2);*/
-
-
-    var page2 = new tms.GanttTab();
-    tabView.add(page2);
+    var ganttTab = new tms.GanttTab();
+    tabView.add(ganttTab);
 
     var notesTab = new tms.NotesTab();
     tabView.add(notesTab);
@@ -204,16 +206,19 @@ qx.Class.define("tms.MainWindow",
   			  var proj_obj = gui.tree.getDataModel().getUserData(nodes[0].nodeId);
   			  var proj = proj_obj.slug;
   			  notesTab.setProject(proj);
+  			  ganttTab.setProject(proj);
   			  
   			  // remove proj button
           gui.buttons["remove"].setEnabled(true);
           gui.buttons["add_task"].setEnabled(proj_obj.parent_project?false:true);
+          gui.buttons["add_event"].setEnabled(true);
   			  
   			} else {
   			  this.setValue("");
   			  buttonRemove.setEnabled(false);
   			  gui.buttons["remove"].setEnabled(false);
   			  gui.buttons["add_task"].setEnabled(false);
+  			  gui.buttons["add_event"].setEnabled(false);
   			  notesTab.setProject(null);
   			}
 		  },
@@ -234,6 +239,17 @@ qx.Class.define("tms.MainWindow",
   			  dataModel.setData();
   			}
 		  });
+		  
+		  
+		gui.events_data.addListener("changeEvents", function() {
+      var dataModel = gui.tree.getDataModel();
+      var selectedNodes = gui.tree.getSelectedNodes();
+      if (selectedNodes.length>0) {
+        var slug = dataModel.getUserData(selectedNodes[0].nodeId).slug;
+        ganttTab.setProject(slug);
+      }
+		}, this);
+		
 
 		o = new qx.ui.form.CheckBox("Exclude first-level tree lines?");
 		o.set({ value: false });

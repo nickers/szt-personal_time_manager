@@ -5,7 +5,6 @@ qx.Class.define( "tms.EventsData", {
       var rc = new tms.RuntimeConfig();
       var dd = new tms.DataDownloader();
       var ctx = this;
-      alert(rc.getUrl("events") + proj_slug.toString());
       dd.fetchData(rc.getUrl("events") + proj_slug.toString(), function(e) {
         ctx.model = e;
         ctx.fireDataEvent("changeEvents", e);

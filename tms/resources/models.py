@@ -83,4 +83,10 @@ class AuthTimeEventHandler(AuthBaseHandler):
     fields = (('project',('id','name','slug')), 'start_time', 'end_time', 'comments')
     
     
+    def pre_create(self, request, *args, **kwargs):
+        try:
+            request.data['project_id'] = Project.objects.filter(user=request.user).get(slug=kwargs['project_slug']).id
+        except Exception as e:
+            print "pre_create:", e
+    
     
