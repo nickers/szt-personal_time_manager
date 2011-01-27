@@ -162,13 +162,16 @@ qx.Class.define("tms.MainWindow",
 		page1.add(conta);
 		tabView.add(page1);
 
-		var page2 = new qx.ui.tabview.Page("Gantt", "icon/16/apps/utilities-terminal.png");
+/*		var page2 = new qx.ui.tabview.Page("Gantt", "icon/16/apps/utilities-terminal.png");
 		page2.setLayout(new qx.ui.layout.Grow());
 		conta = new qx.ui.container.Scroll();
 		conta.add(commandFrame, { border: 0 } );
 		page1.add(conta);
-		tabView.add(page2);
+		tabView.add(page2);*/
 
+
+    var page2 = new tms.GanttTab();
+    tabView.add(page2);
 
     var notesTab = new tms.NotesTab();
     tabView.add(notesTab);
