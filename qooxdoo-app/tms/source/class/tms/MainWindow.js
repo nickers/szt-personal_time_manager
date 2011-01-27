@@ -113,6 +113,14 @@ qx.Class.define("tms.MainWindow",
       addWindow.show();
     }, this);
     
+    gui.buttons["add_task"].addListener("execute", function() {
+      var dataModel = gui.tree.getDataModel();
+      var selectedNodes = gui.tree.getSelectedNodes();
+      var slug = dataModel.getUserData(selectedNodes[0].nodeId).slug;
+      var addWindow = new tms.AddProjectWindow(gui.project_data, slug);
+      addWindow.show();
+    }, this);
+    
     gui.buttons["remove"].addListener("execute", function() {
       var dataModel = gui.tree.getDataModel();
       var selectedNodes = gui.tree.getSelectedNodes();

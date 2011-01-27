@@ -16,8 +16,12 @@ qx.Class.define("tms.AddProjectWindow",
     var n_name = new qx.ui.form.TextField();
     var n_desc = new qx.ui.form.TextArea();
     var n_budget = new qx.ui.form.Spinner(0,0,1000000);
+    var n_start = new qx.ui.form.DateField();    
     var b_ok = new qx.ui.form.Button("Dodaj");
     var b_cancel = new qx.ui.form.Button("Anuluj");
+    
+    n_start.setValue(new Date());
+    n_start.setDateFormat(new qx.util.format.DateFormat("yyy-MM-dd HH:mm"));
     
     this.add(new qx.ui.basic.Label("Nazwa:"));
     this.add(n_name);
@@ -25,6 +29,8 @@ qx.Class.define("tms.AddProjectWindow",
     this.add(n_desc);
     this.add(new qx.ui.basic.Label("Budżet czasu(w godzinach):"));
     this.add(n_budget);
+    this.add(new qx.ui.basic.Label("Start projektu:"));
+    this.add(n_start);
     
     var btns = new qx.ui.container.Composite();
     btns.setLayout(new qx.ui.layout.Grid(1,2));

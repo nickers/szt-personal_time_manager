@@ -47,12 +47,13 @@ class AuthProjectHandler(AuthBaseHandler):
     fields = ('id', 'name', 'slug', 'start_date', ('parent_project', ('id','name','slug')), 'planned_work', 'budget', 'description', ('user',('id','username')))
     
     def pre_create(self, request, *args, **kwargs):
-        print kwargs
         try:
             request.data['user'] = request.user
             request.data['slug'] = slugify(request.data["name"])
+            if request.data["parent_project"]:
+                request.data["parent_project"] = self.model_filter(request.user).get().get(**kwargs)
         except Exception as e:
-            print e
+            print "pre_create:", e
             
     def delete(self, request, **kwargs):
         if len(kwargs)==0:
