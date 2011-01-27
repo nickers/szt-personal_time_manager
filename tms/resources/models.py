@@ -36,7 +36,10 @@ class AuthTimeEvent():
     def __init__(self, u):
         self.objects = TimeEvent.objects.filter(project__user=u.id)
         self.exclude = ('id','user')
-    def get(self, filter=None):
+
+    def get(self, project_slug=None):
+        if (project_slug):
+            return self.objects.filter(models.Q(project__slug=project_slug) | models.Q(project__parent_project__slug=project_slug))
         return self.objects
 
 # handlers
@@ -77,4 +80,6 @@ class AuthTimeEventHandler(AuthBaseHandler):
     model = TimeEvent
     model_filter = AuthTimeEvent
     fields = (('project',('id','name','slug')), 'start_time', 'end_time', 'comments')
+    
+    
     

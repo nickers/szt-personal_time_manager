@@ -13,7 +13,7 @@ class AuthBaseHandler(BaseHandler):
         """ Empty pre-create action. Overrite to modify data before create is called. """
         None
         
-    def pre_read(self, request, id):
+    def pre_read(self, request, id, *args, **kwargs):
         None
         
     def post_read(self, request, id, results):
@@ -44,9 +44,11 @@ class AuthBaseHandler(BaseHandler):
         Returns object with given id ("404 Not found" if no object with given id)
         or list of objects. Both are filtered only for logged user.
         """
-        base = self.model_filter(request.user).get(kwargs)
         
-        self.pre_read(request, id)
+        self.pre_read(request, id, *args, **kwargs)
+        
+        base = self.model_filter(request.user).get(kwargs['project_slug'])
+        del kwargs['project_slug']
         
         if id:
             try:
