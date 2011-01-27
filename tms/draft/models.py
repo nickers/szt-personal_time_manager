@@ -1,3 +1,4 @@
+from django import forms
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -28,6 +29,9 @@ class Viewers(models.Model):
     user = models.CharField(max_length=250, db_index=True)
     password = models.CharField(max_length=100) # format "<algo>$<salt>$<pass>
 
+class UploadedFileForm(forms.Form):
+    file = forms.FileField()
+    
 class UploadedFile(models.Model):
     file = models.FileField(upload_to=settings.DRAFT_UPLOADED_FILES_DIR)
     

@@ -9,4 +9,5 @@ admin.autodiscover()
 
 urlpatterns = patterns('draft.views',
     (r'^bilans/(?P<project>[a-zA-Z0-9_.-]+)$', bilans),
+    (r'^file/(?P<project>[a-zA-Z0-9_.-]+)$', upload_file),
 )

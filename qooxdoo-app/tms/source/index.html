@@ -6,6 +6,18 @@
   <script type="text/javascript" src="advajax.js"></script>
   <script type="text/javascript" src="json2.js"></script>
   <script type="text/javascript" src="script/tms.js"></script>
+  <script type="text/javascript" src="webtoolkit.aim.js"></script>
+  <script type="text/javascript">
+    function startCallback() {
+        // make something useful before submit (onStart)
+        return true;
+    }
+ 
+      function completeCallback(response) {
+        console.log(response);
+        alert(response);
+      }
+  </script>
 
   <link rel="stylesheet" type="text/css" href="gantt/lib/jquery-ui-1.8.4.css" />
   <link rel="stylesheet" type="text/css" href="gantt/reset.css" />

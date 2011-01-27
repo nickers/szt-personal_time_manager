@@ -39,6 +39,20 @@ qx.Class.define("tms.NotesTab",
       scr.add(group);
       group.setLayout(new qx.ui.layout.VBox());
       
+      var up_file = new qx.ui.groupbox.GroupBox("Dodaj plik");
+      this.up_file = up_file;
+      up_file.setLayout(new qx.ui.layout.Grow());
+      group.add(up_file);
+      if (proj_slug){
+        var _h = '<form method="post" action="/draft/file/'+proj_slug+'" enctype="multipart/form-data" ' 
+               + " onsubmit=\"return AIM.submit(this, {'onStart' : startCallback, 'onComplete' : completeCallback})\""
+               + '><input type="file" name="file" /><input type="submit" value="ok" />'
+               + '</form>';
+  
+        var html = new qx.ui.embed.Html(_h);
+        up_file.add(html);
+      }
+      
       
       //var btns = new qx.ui.groupbox.GroupBox("");
       /*
@@ -102,6 +116,17 @@ qx.Class.define("tms.NotesTab",
     
     setData : function(notes, proj_slug) {
       var group = this.__init_notes(proj_slug);
+      
+      this.up_file.removeAll();
+      if (proj_slug) {
+        var _h = '<form method="post" action="/draft/file/'+proj_slug+'" enctype="multipart/form-data" ' 
+                 + " onsubmit=\"return AIM.submit(this, {'onStart' : startCallback, 'onComplete' : completeCallback})\""
+                 + '><input type="file" name="file" /><input type="submit" value="ok" />'
+                 + '</form>';
+    
+        var html = new qx.ui.embed.Html(_h);
+        this.up_file.add(html);
+      }
       
       for (var noteNr=0; noteNr<notes.length; noteNr++) {
         var pola = {"name":"Nazwa", "description":"Notatka", "add_time":"Czas dodania"};

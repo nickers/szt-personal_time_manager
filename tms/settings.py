@@ -101,4 +101,4 @@ INSTALLED_APPS = (
 
 
 ####
-DRAFT_UPLOADED_FILES_DIR = "uploaded_files"
+DRAFT_UPLOADED_FILES_DIR = "./uploaded_files"
